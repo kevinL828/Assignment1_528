@@ -92,9 +92,10 @@ void *writeTourToFile(int *tour, int tourLength, char *filename){
 
 
 int main(){
-  int num = readNumOfCoords("coodinates");
+  int num = readNumOfCoords("coordinates");
   printf("coordinates count num is:%d: ", num);
 
+  printf("\n")
   return 0;
 
 }
