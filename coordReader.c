@@ -90,7 +90,7 @@ void *writeTourToFile(int *tour, int tourLength, char *filename){
 
 }
 
-// print pointer 2d array
+// print by pointers
 void print_coordinates(double **coords,int num){
   int i;
   for(i = 0; i< num; i++){
@@ -98,12 +98,22 @@ void print_coordinates(double **coords,int num){
   }
 }
 
+// print by 2d array
+void print_coordinates_arr(double **coords,int num){
+  int i;
+  double **arr = coords;
+  for(i = 0; i< num; i++){
+    printf("%f,%f\n",coords[i][0],coords[i][1]);
+  }
+}
+
 int main(){
-  int num = readNumOfCoords("coordinates");
-  double **pt = readCoords("coordinates",num);
+  char *name = "16_coords.coord";
+  int num = readNumOfCoords(name);
+  double **pt = readCoords(name,num);
   printf("coordinates count num is: %d\n", num);
-  printf("coordinates are: %f",**(pt+1));
-  print_coordinates(pt,num);
+  // print_coordinates(pt,num);
+  print_coordinates_arr(pt,num);
 
   return 0;
 
