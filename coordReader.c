@@ -86,7 +86,8 @@ void *writeTourToFile(int *tour, int tourLength, char *filename){
         fprintf(file, "%d ", tour[i]);
     }
 
-	// return file;
+	fclose(file);
+  return NULL;
 
 }
 
