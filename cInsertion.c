@@ -3,6 +3,7 @@
 #include<math.h>
 #include<string.h>
 #include<stdbool.h>
+#include"coordReader.h"
 
 // Include the functions from your existing code here
 // ...

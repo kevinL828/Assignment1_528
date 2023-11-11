@@ -16,6 +16,8 @@
 
 int readNumOfCoords(char *fileName);
 double **readCoords(char *filename, int numOfCoords);
+void *writeTourToFile(int *tour, int tourLength, char *filename);
+void print_coordinates(double **coords,int num);
 
 /*Gets the number of the coordinates in the file. Returns as a single integer*/
 int readNumOfCoords(char *filename){
@@ -108,14 +110,14 @@ void print_coordinates_arr(double **coords,int num){
   }
 }
 
-int main(){
-  char *name = "16_coords.coord";
-  int num = readNumOfCoords(name);
-  double **pt = readCoords(name,num);
-  printf("coordinates count num is: %d\n", num);
-  // print_coordinates(pt,num);
-  print_coordinates_arr(pt,num);
+// int main(){
+//   char *name = "16_coords.coord";
+//   int num = readNumOfCoords(name);
+//   double **pt = readCoords(name,num);
+//   printf("coordinates count num is: %d\n", num);
+//   // print_coordinates(pt,num);
+//   print_coordinates_arr(pt,num);
 
-  return 0;
+//   return 0;
 
-}
+// }
