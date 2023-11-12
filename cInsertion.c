@@ -3,92 +3,190 @@
 #include<math.h>
 #include<string.h>
 #include<stdbool.h>
-#include"coordReader.h"
+
 
 // Include the functions from your existing code here
-// ...
+/*Gets the number of the coordinates in the file. Returns as a single integer*/
+int readNumOfCoords(char *filename){
+	FILE *file = fopen(filename, "r");
+	int numOfCoords = 0;
+
+	if(file == NULL){
+		return -1;
+	}
+
+	char line[100];
+
+	while(fgets(line, sizeof(line), file) != NULL){
+		numOfCoords++;
+	}
+	
+    return numOfCoords;
+}
+
+/*Gets the data from the file. Returns as an array of doubles, Ignores the first integer*/
+double **readCoords(char *filename, int numOfCoords){
+	FILE *file = fopen(filename,"r");
+  int i;
+
+	char line[100];
+    
+  if(file == NULL) {
+      printf("Unable to open file: %s", filename);
+      return NULL;
+  }
+
+	double **coords = (double **)malloc(numOfCoords * sizeof(double *));
+
+	for(i = 0; i < numOfCoords; i++){
+		coords[i] = (double *) malloc(2 * sizeof(int));
+		if (coords[i] == NULL){
+			perror("Memory Allocation Failed");
+		}
+	}
+
+	int lineNum = 0;
+	while(fgets(line, sizeof(line), file) != NULL){
+		double x, y;
+		if (sscanf(line, "%lf,%lf", &x, &y) == 2){
+			coords[lineNum][0] = x;
+			coords[lineNum][1] = y;
+			lineNum++;
+		}
+	}
+
+	return coords;
+}
+
+void *writeTourToFile(int *tour, int tourLength, char *filename){
+	
+	FILE *file = fopen(filename, "w");
+	int i;	
+	
+	if(file == NULL){
+		printf("Unable to open file: %s", filename);
+		return NULL;
+	}
+
+	fprintf(file, "%d \n", tourLength);
+
+	printf("Writing output data\n");
+    for(i=0; i < tourLength; i++) {
+        fprintf(file, "%d ", tour[i]);
+    }
+
+	fclose(file);
+  return NULL;
+
+}
 
 // Function to calculate Euclidean distance between two points
-double distance(double x1, double y1, double x2, double y2) {
+double get_distance(double x1, double y1, double x2, double y2) {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
-// Function to find the farthest vertex from any vertex in the partial tour
-int findFarthestVertex(double **coords, int numOfCoords, bool *visited) {
-    double maxDist = -1.0;
-    int farthestVertex = -1;
-
-    for (int i = 0; i < numOfCoords; i++) {
-        if (!visited[i]) {
-            for (int j = 0; j < numOfCoords; j++) {
-                if (visited[j]) {
-                    double dist = distance(coords[i][0], coords[i][1], coords[j][0], coords[j][1]);
-                    if (dist > maxDist) {
-                        maxDist = dist;
-                        farthestVertex = i;
-                    }
-                }
-            }
-        }
+// Function to get Euclidean distance matrix bewteen any two vertexes
+void get_distance_matrix(double **coords, int num,double **distance_matrix){
+  for(int i = 0; i < num; i++){
+    for(int j = 0; j < num; j++){
+      if (i == j){
+        distance_matrix[i][j] = 0;
+      }else{
+        int x1 = **(coords+i);
+        int y1 = *(*(coords+i)+1);
+        int x2 = **(coords+j);
+        int y2 = *(*(coords+j)+1);
+        double distance = get_distance(x1,y1,x2,y2);
+        distance_matrix[i][j] = distance;
+        // distance_matrix[j][i] = distance;
+      }
+        
     }
+  }
 
-    return farthestVertex;
 }
 
-// Function to insert the farthest vertex in the optimal position in the tour
-void insertInTour(int *tour, int *tourLength, int vertex, double **coords) {
-    // Find the best position to insert the vertex
-    double minIncrease = INFINITY;
-    int bestPosition = -1;
-
-    for (int i = 0; i < *tourLength - 1; i++) {
-        double currentIncrease = distance(coords[tour[i]][0], coords[tour[i]][1], coords[vertex][0], coords[vertex][1]) +
-                                 distance(coords[vertex][0], coords[vertex][1], coords[tour[i + 1]][0], coords[tour[i + 1]][1]) -
-                                 distance(coords[tour[i]][0], coords[tour[i]][1], coords[tour[i + 1]][0], coords[tour[i + 1]][1]);
-
-        if (currentIncrease < minIncrease) {
-            minIncrease = currentIncrease;
-            bestPosition = i;
+// print 2D array
+void print2DArray(double **array, int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%f ", array[i][j]);
         }
+        printf("\n");
     }
-
-    // Insert the vertex at the best position
-    for (int i = *tourLength; i > bestPosition + 1; i--) {
-        tour[i] = tour[i - 1];
-    }
-    tour[bestPosition + 1] = vertex;
-    (*tourLength)++;
 }
+
+
+void malloc_2DArray(double **array,int numOfElements){
+
+  array = (double **) malloc ( numOfElements * sizeof ( double * ) ) ; 
+  for ( int i = 0; i < numOfElements ; i++) { 
+    array [ i ] = ( double *) malloc ( numOfElements * sizeof ( double ) ) ; 
+  }
+}
+
+
+void free_2DArray(double **arr, int rows){
+  // free memory
+    for (int i = 0; i < rows; i++) {
+        free(arr[i]);
+    }
+    free(arr);
+}
+
+
+
+
+
+//-----------------------------------------------------------------
+
 
 int main() {
-    char *filename = "16_coords.coord";
+    char *filename = "9_coords.coord";
     int numOfCoords = readNumOfCoords(filename);
     double **coords = readCoords(filename, numOfCoords);
 
-    // Initialize the tour with the first two vertices
-    int *tour = (int *)malloc(numOfCoords * sizeof(int));
-    bool *visited = (bool *)calloc(numOfCoords, sizeof(bool));
-    tour[0] = 0; tour[1] = 1;
-    visited[0] = visited[1] = true;
-    int tourLength = 2;
+    print2DArray(coords, numOfCoords,2);
 
-    // Farthest Insertion Algorithm
-    while (tourLength < numOfCoords) {
-        int farthest = findFarthestVertex(coords, numOfCoords, visited);
-        visited[farthest] = true;
-        insertInTour(tour, &tourLength, farthest, coords);
+    // Initialize the distance matrix
+    double **distance_matrix = (double **) malloc ( numOfCoords * sizeof ( double * ) ) ; 
+    for ( int i = 0; i < numOfCoords ; i++) { 
+      distance_matrix [ i ] = ( double *) malloc ( numOfCoords * sizeof ( double ) ) ; 
     }
+    // malloc_2DArray(distance_matrix, numOfCoords);
 
-    // Write the tour to a file or print it
-    // ...
+    get_distance_matrix(coords, numOfCoords, distance_matrix);
 
-    // Free allocated memory
-    free(tour);
-    free(visited);
-    for (int i = 0; i < numOfCoords; i++) {
-        free(coords[i]);
-    }
-    free(coords);
+    print2DArray(distance_matrix, numOfCoords, numOfCoords);
+
+    //free memory
+    free_2DArray(distance_matrix, numOfCoords);
 
     return 0;
 }
+
+    // Initialize the tour with the first two vertices
+    // int *tour = (int *)malloc(numOfCoords * sizeof(int));
+    // bool *visited = (bool *)calloc(numOfCoords, sizeof(bool));
+    // tour[0] = 0; tour[1] = 1;
+    // visited[0] = visited[1] = true;
+    // int tourLength = 2;
+
+    // // Farthest Insertion Algorithm
+    // while (tourLength < numOfCoords) {
+    //     int farthest = findFarthestVertex(coords, numOfCoords, visited);
+    //     visited[farthest] = true;
+    //     insertInTour(tour, &tourLength, farthest, coords);
+    // }
+
+    // // Write the tour to a file or print it
+    // writeTourToFile(tour,tourLength,"my_cout_16.out");
+
+    // // Free allocated memory
+    // free(tour);
+    // free(visited);
+    // for (int i = 0; i < numOfCoords; i++) {
+    //     free(coords[i]);
+    // }
+    // free(coords);
+
