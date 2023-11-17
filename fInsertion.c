@@ -38,7 +38,7 @@ double **readCoords(char *filename, int numOfCoords){
 	double **coords = (double **)malloc(numOfCoords * sizeof(double *));
 
 	for(i = 0; i < numOfCoords; i++){
-		coords[i] = (double *) malloc(2 * sizeof(int));
+		coords[i] = (double *) malloc(2 * sizeof(double));
 		if (coords[i] == NULL){
 			perror("Memory Allocation Failed");
 		}
@@ -133,57 +133,52 @@ void free_2DArray(double **arr, int rows){
   free(arr);
 }
 
-// Function to find cheapest insertion
-int findFartestInsertion(int *tour, int tourLength, double **distance_matrix, bool *visited, int 
-numOfCoords) {
-    double minIncrease = INFINITY;
-    int minPosition = -1;
-    int minVertex = -1;
-    int maxPosition = -1;
-    int maxDistance = 0;
+// Function to find the farthest unvisited vertex
+int findFarthestVertex(double **distance_matrix, bool *visited, int numOfCoords, int *tour, int tourLength) {
+  double maxDistance = -1.0;
+  int farthestVertex = -1;
+  double distance_sum;
 
-    //find the fartest position from the tour array position
-    for (int i = 0; i < tourLength; i++){
-      for(int j = 0; j < numOfCoords; j++){
-        double distance = distance_matrix[tour[i]][j];
-        if (maxDistance < distance){
-          maxDistance = distance;
-          maxPosition[i] = j;
+  for (int i = 0; i < numOfCoords; i++) {
+    if (!visited[i]) {
+      for (int j = 0; j < tourLength; j++) {
+        if (distance_matrix[tour[j]][i] > maxDistance) {
+            maxDistance = distance_matrix[tour[j]][i];
+            farthestVertex = i;
         }
       }
     }
+  }
 
-    for (int i = 0; i < numOfCoords; i++) {
-        if (!visited[i]) {
-            for (int j = 0; j < tourLength-1; j++) {
-                double increase = distance_matrix[tour[j]][i] + distance_matrix[i][tour[j + 1]] - distance_matrix[tour[j]][tour[j + 1]];
-                if (increase < minIncrease) {
-                    minIncrease = increase;
-                    minPosition = j;
-                    minVertex = i;
-                }
-            }
-        }
-    }
-
-    // 插入顶点
-    if (minPosition != -1) {
-        for (int i = tourLength; i > minPosition + 1; i--) {
-            tour[i] = tour[i - 1];
-        }
-        tour[minPosition + 1] = minVertex;
-    }
-
-    return minVertex;
+  return farthestVertex;
 }
 
+// Function to insert a vertex in the tour at the best position
+void insertAtBestPosition(int *tour, int tourLength, int vertex, double **distance_matrix) {
+    double minIncrease = INFINITY;
+    int bestPosition = -1;
+
+    for (int i = 0; i < tourLength - 1; i++) {
+        double increase = distance_matrix[tour[i]][vertex] + distance_matrix[vertex][tour[i + 1]] - distance_matrix[tour[i]][tour[i + 1]];
+        if (increase < minIncrease) {
+            minIncrease = increase;
+            bestPosition = i;
+        }
+    }
+
+    // Shift elements to make space for the new vertex
+    for (int i = tourLength; i > bestPosition + 1; i--) {
+        tour[i] = tour[i - 1];
+    }
+    tour[bestPosition + 1] = vertex;
+}
 
 
 //-----------------------------------------------------------------
 
 
 int main() {
-  char *filename = "9_coords.coord";
+  char *filename = "4096_coords.coord";
   int numOfCoords = readNumOfCoords(filename);
   double **coords = readCoords(filename, numOfCoords);
 
@@ -206,20 +201,27 @@ int main() {
 
   // initialize original vertex
   tour[0] = 0;
-  tour[1] = 0;
+  tour[2] = 0;
   visited[0] = true;
   tourLength = 2;
 
-  // Excute Cheapest Insertion
-  while (tourLength < numOfCoords+1) {
-      int nextVertex = findFartestInsertion(tour, tourLength, distance_matrix, visited, numOfCoords);
-      if (nextVertex != -1) {
-          visited[nextVertex] = true;
-          tourLength++;
-      } else {
-          break;
-      }
-  }
+  // Find the farthest vertex from the initial vertex
+    int farthest = findFarthestVertex(distance_matrix, visited, numOfCoords, tour, tourLength);
+    tour[1] = farthest;
+    visited[farthest] = true;
+    tourLength = 3;
+
+    // Main loop of the Farthest Insertion algorithm
+    while (tourLength < numOfCoords+1) {
+        farthest = findFarthestVertex(distance_matrix, visited, numOfCoords, tour, tourLength);
+        if (farthest != -1) {
+            insertAtBestPosition(tour, tourLength, farthest, distance_matrix);
+            visited[farthest] = true;
+            tourLength++;
+        } else {
+            break;
+        }
+    }
 
   // print tour
   printf("%d\n",tourLength);

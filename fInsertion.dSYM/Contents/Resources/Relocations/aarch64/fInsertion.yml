@@ -1,0 +1,17 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/admin/Github/Assignment1_528/fInsertion'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _readNumOfCoords, symObjAddr: 0x0, symBinAddr: 0x100003234, symSize: 0xD4 }
+  - { offsetInCU: 0x6B, offset: 0x6B, size: 0x8, addend: 0x0, symName: _readNumOfCoords, symObjAddr: 0x0, symBinAddr: 0x100003234, symSize: 0xD4 }
+  - { offsetInCU: 0xBD, offset: 0xBD, size: 0x8, addend: 0x0, symName: _readCoords, symObjAddr: 0xD4, symBinAddr: 0x100003308, symSize: 0x1D0 }
+  - { offsetInCU: 0x167, offset: 0x167, size: 0x8, addend: 0x0, symName: _writeTourToFile, symObjAddr: 0x2A4, symBinAddr: 0x1000034D8, symSize: 0x108 }
+  - { offsetInCU: 0x1C7, offset: 0x1C7, size: 0x8, addend: 0x0, symName: _get_distance, symObjAddr: 0x3AC, symBinAddr: 0x1000035E0, symSize: 0x58 }
+  - { offsetInCU: 0x219, offset: 0x219, size: 0x8, addend: 0x0, symName: _get_distance_matrix, symObjAddr: 0x404, symBinAddr: 0x100003638, symSize: 0x1A0 }
+  - { offsetInCU: 0x2E5, offset: 0x2E5, size: 0x8, addend: 0x0, symName: _print2DArray, symObjAddr: 0x5A4, symBinAddr: 0x1000037D8, symSize: 0xC0 }
+  - { offsetInCU: 0x35D, offset: 0x35D, size: 0x8, addend: 0x0, symName: _malloc_2DArray, symObjAddr: 0x664, symBinAddr: 0x100003898, symSize: 0x7C }
+  - { offsetInCU: 0x3AB, offset: 0x3AB, size: 0x8, addend: 0x0, symName: _free_2DArray, symObjAddr: 0x6E0, symBinAddr: 0x100003914, symSize: 0x6C }
+  - { offsetInCU: 0x3F9, offset: 0x3F9, size: 0x8, addend: 0x0, symName: _findFarthestVertex, symObjAddr: 0x74C, symBinAddr: 0x100003980, symSize: 0x114 }
+  - { offsetInCU: 0x4BD, offset: 0x4BD, size: 0x8, addend: 0x0, symName: _insertAtBestPosition, symObjAddr: 0x860, symBinAddr: 0x100003A94, symSize: 0x170 }
+  - { offsetInCU: 0x57B, offset: 0x57B, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x9D0, symBinAddr: 0x100003C04, symSize: 0x280 }
+...
