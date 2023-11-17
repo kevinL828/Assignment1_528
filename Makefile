@@ -38,7 +38,7 @@ rm -f ${EXE}
 echo compiling $SRC to $EXE 
 
 #compilation using intel compiler of sourcecode to exectuable.
-icc -qopenmp -O0 $SRC  -o $EXE  
+icc -no-multibyte-chars -qopenmp -O0 $SRC  -o $EXE -std=gnu99
 echo
 echo ------------------------------------
 

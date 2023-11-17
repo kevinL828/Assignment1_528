@@ -3,6 +3,7 @@
 #include<math.h>
 #include<string.h>
 #include<stdbool.h>
+#include<time.h>
 
 // Include the functions from your existing code here
 /*Gets the number of the coordinates in the file. Returns as a single integer*/
@@ -168,6 +169,9 @@ int findCheapestInsertion(int *tour, int tourLength, double **distance_matrix, b
 
 
 int main() {
+  clock_t start, end;
+  double times;
+  start = clock();
   char *filename = "4096_coords.coord";
   int numOfCoords = readNumOfCoords(filename);
   double **coords = readCoords(filename, numOfCoords);
@@ -213,11 +217,17 @@ int main() {
   }
   printf("\n");
 
+  char *myfileName = "./mycout/cout_4096_my"; 
+  writeTourToFile(tour, tourLength, myfileName);
+
   // free memory
   free(tour);
   free(visited);
   //free memory
   free_2DArray(distance_matrix, numOfCoords);
+  end = clock();
+  times = (double)(end-start)/CLOCKS_PER_SEC;
+  printf("The total cost of this code is: %f s",times);
 
   return 0;
 }
