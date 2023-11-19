@@ -29,5 +29,5 @@ touch $DIR/$F4096OUT
 module load compilers/intel/2019u5 
 
 # run Makefile
-make Makefile
+make
 
