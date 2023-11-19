@@ -168,11 +168,12 @@ int findCheapestInsertion(int *tour, int tourLength, double **distance_matrix, b
 //-----------------------------------------------------------------
 
 
-int main() {
+int main(int argc, char *argv[]) {
   clock_t start, end;
   double times;
   start = clock();
-  char *filename = "4096_coords.coord";
+  char *filename = argv[1];
+  char *out_put_file_path = argv[2];
   int numOfCoords = readNumOfCoords(filename);
   double **coords = readCoords(filename, numOfCoords);
 
@@ -217,8 +218,8 @@ int main() {
   }
   printf("\n");
 
-  char *myfileName = "./mycout/cout_4096_my"; 
-  writeTourToFile(tour, tourLength, myfileName);
+  // char *myfileName = "./mycout/cout_4096_my"; 
+  writeTourToFile(tour, tourLength, out_put_file_path);
 
   // free memory
   free(tour);
