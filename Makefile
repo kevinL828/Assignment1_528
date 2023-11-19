@@ -9,19 +9,19 @@ all: ci fi comp fomp icomp ifomp
 
 # make ci compiles
 ci: cInsertion.c coordReader.c
-	$(GCC) -std=gnu99 -no-multibyte-chars cInsertion.c coordReader.c -o ci.exe -lm
+	$(GCC) -std=gnu99 cInsertion.c coordReader.c -o ci.exe -lm
 
 # make fi compiles
 fi: fInsertion.c coordReader.c
-	$(GCC) -std=gnu99 -no-multibyte-chars fInsertion.c coordReader.c -o fi.exe -lm
+	$(GCC) -std=gnu99 fInsertion.c coordReader.c -o fi.exe -lm
 
 # make comp compiles
 comp: ompcInsertion.c coordReader.c
-	$(GCC) -std=gnu99 -no-multibyte-chars ompcInsertion.c coordReader.c -o comp.exe -fopenmp -lm
+	$(GCC) -std=gnu99 ompcInsertion.c coordReader.c -o comp.exe -fopenmp -lm
 
 # make fomp compiles
 fomp: ompfInsertion.c coordReader.c
-	$(GCC) -std=gnu99 -no-multibyte-chars ompfInsertion.c coordReader.c -o fomp.exe -fopenmp -lm
+	$(GCC) -std=gnu99 ompfInsertion.c coordReader.c -o fomp.exe -fopenmp -lm
 
 # make icomp compiles
 icomp: ompcInsertion.c coordReader.c
