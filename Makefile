@@ -1,64 +1,33 @@
-#!/bin/bash -l
+# Compiler settings
+# GNU compiler
+GCC = gcc
+# Intel compiler
+ICC = icc
 
-# Specific course queue and max wallclock time
-#SBATCH -p course -t 2
+# Default rule
+all: ci fi comp fomp icomp ifomp
 
-# Defaults on Barkla (but set to be safe)
-## Specify the current working directory as the location for executables/files
-#SBATCH -D ./
-## Export the current environment to the compute node
-#SBATCH --export=ALL
+# make ci compiles
+ci: cInsertion.c coordReader.c
+	$(GCC) -std=gnu99 cInsertion.c coordReader.c -o ci.exe -lm
 
-# load modules intel compiler
-module load compilers/intel/2019u5 
+# make fi compiles
+fi: fInsertion.c coordReader.c
+	$(GCC) -std=gnu99 fInsertion.c coordReader.c -o fi.exe -lm
 
-## SLURM terms
-## nodes            relates to number of nodes
-## ntasks-per-node  relates to MPI processes per node
-## cpus-per-task    relates to OpenMP threads (per MPI process)
+# make comp compiles
+comp: ompcInsertion.c coordReader.c
+	$(GCC) -std=gnu99 ompcInsertion.c coordReader.c -o comp.exe -fopenmp -lm
 
-echo "Node list                    : $SLURM_JOB_NODELIST"
-echo "Number of nodes allocated    : $SLURM_JOB_NUM_NODES or $SLURM_NNODES"
-echo "Number of threads or processes          : $SLURM_NTASKS"
-echo "Number of processes per node : $SLURM_TASKS_PER_NODE"
-echo "Requested tasks per node     : $SLURM_NTASKS_PER_NODE"
-echo "Requested CPUs per task      : $SLURM_CPUS_PER_TASK"
-echo "Scheduling priority          : $SLURM_PRIO_PROCESS"
+# make fomp compiles
+fomp: ompfInsertion.c coordReader.c
+	$(GCC) -std=gnu99 ompfInsertion.c coordReader.c -o fomp.exe -fopenmp -lm
 
-# parallel using OpenMP
-# SRC = $1 is name of the source code as an arguemnt
-SRC=$1
-DATA=$2
-DEST=$3
+# make icomp compiles
+icomp: ompcInsertion.c coordReader.c
+	$(ICC) -std=gnu99 ompcInsertion.c coordReader.c -o icomp.exe -qopenmp -lm
 
-#sets the exe name as the sourcecode, and %% removes the ".c"
-EXE=${SRC%%.c}.exe 
+# make ifomp comliles
+ifomp: ompfInsertion.c coordReader.c
+	$(ICC) -std=gnu99 ompfInsertion.c coordReader.c -o ifomp.exe -qopenmp -lm
 
-#deletes the existing executable (if it exists)
-rm -f ${EXE} 
-
-echo compiling $SRC to $EXE 
-
-#compilation using intel compiler of sourcecode to exectuable.
-icc -no-multibyte-chars -qopenmp -O0 $SRC  -o $EXE -std=gnu99
-echo
-echo ------------------------------------
-
-#this tests if the file $EXE is present and executable
-if test -x $EXE; then 
-      # set number of threads
-      
-      # if '-c' not used then default to 1. SLURM_CPUS_PER_TASK is given by -c
-      export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1} 
-      echo using ${OMP_NUM_THREADS} OpenMP threads
-      echo
-      echo 
-      echo Multiple execution..
-      echo
-      echo
-
-      # run multiple times. Because we have exported how many threads we're using, we just execute the file.
-      for i in {1..5}; do ./${EXE}; done     
-else
-     echo $SRC did not built to $EXE
-fi

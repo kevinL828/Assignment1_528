@@ -18,6 +18,9 @@ int readNumOfCoords(char *fileName);
 double **readCoords(char *filename, int numOfCoords);
 void *writeTourToFile(int *tour, int tourLength, char *filename);
 void print_coordinates(double **coords,int num);
+double get_distance(double x1, double y1, double x2, double y2);
+void get_distance_matrix(double **coords, int num,double **distance_matrix);
+
 
 /*Gets the number of the coordinates in the file. Returns as a single integer*/
 int readNumOfCoords(char *filename){
@@ -110,14 +113,28 @@ void print_coordinates_arr(double **coords,int num){
   }
 }
 
-// int main(){
-//   char *name = "16_coords.coord";
-//   int num = readNumOfCoords(name);
-//   double **pt = readCoords(name,num);
-//   printf("coordinates count num is: %d\n", num);
-//   // print_coordinates(pt,num);
-//   print_coordinates_arr(pt,num);
+// Function to calculate Euclidean distance between two points
+double get_distance(double x1, double y1, double x2, double y2) {
+    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
 
-//   return 0;
+// Function to get Euclidean distance matrix bewteen any two vertexes
+void get_distance_matrix(double **coords, int num,double **distance_matrix){
+  for(int i = 0; i < num; i++){
+    for(int j = i; j < num; j++){
+      if (i == j){
+        distance_matrix[i][j] = 0;
+      }else{
+        int x1 = **(coords+i);
+        int y1 = *(*(coords+i)+1);
+        int x2 = **(coords+j);
+        int y2 = *(*(coords+j)+1);
+        double distance = get_distance(x1,y1,x2,y2);
+        distance_matrix[i][j] = distance;
+        distance_matrix[j][i] = distance;
+      }
+        
+    }
+  }
 
-// }
+}

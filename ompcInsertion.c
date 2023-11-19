@@ -6,88 +6,17 @@
 #include<time.h>
 #include<omp.h>
 
-// Include the functions from your existing code here
-/*Gets the number of the coordinates in the file. Returns as a single integer*/
-int readNumOfCoords(char *filename){
-	FILE *file = fopen(filename, "r");
-	int numOfCoords = 0;
 
-	if(file == NULL){
-		return -1;
-	}
+// the functions from coordReader.c
+int readNumOfCoords(char *fileName);
+double **readCoords(char *filename, int numOfCoords);
+void *writeTourToFile(int *tour, int tourLength, char *filename);
+void print_coordinates(double **coords,int num);
+double get_distance(double x1, double y1, double x2, double y2);
 
-	char line[100];
-
-	while(fgets(line, sizeof(line), file) != NULL){
-		numOfCoords++;
-	}
-	
-    return numOfCoords;
-}
-
-/*Gets the data from the file. Returns as an array of doubles, Ignores the first integer*/
-double **readCoords(char *filename, int numOfCoords){
-	FILE *file = fopen(filename,"r");
-  int i;
-
-	char line[100];
-    
-  if(file == NULL) {
-      printf("Unable to open file: %s", filename);
-      return NULL;
-  }
-
-	double **coords = (double **)malloc(numOfCoords * sizeof(double *));
-
-	for(i = 0; i < numOfCoords; i++){
-		coords[i] = (double *) malloc(2 * sizeof(int));
-		if (coords[i] == NULL){
-			perror("Memory Allocation Failed");
-		}
-	}
-
-	int lineNum = 0;
-	while(fgets(line, sizeof(line), file) != NULL){
-		double x, y;
-		if (sscanf(line, "%lf,%lf", &x, &y) == 2){
-			coords[lineNum][0] = x;
-			coords[lineNum][1] = y;
-			lineNum++;
-		}
-	}
-
-	return coords;
-}
-
-void *writeTourToFile(int *tour, int tourLength, char *filename){
-	
-	FILE *file = fopen(filename, "w");
-	int i;	
-	
-	if(file == NULL){
-		printf("Unable to open file: %s", filename);
-		return NULL;
-	}
-
-	fprintf(file, "%d \n", tourLength);
-
-	printf("Writing output data\n");
-    for(i=0; i < tourLength; i++) {
-        fprintf(file, "%d ", tour[i]);
-    }
-
-	fclose(file);
-  return NULL;
-
-}
-
-// Function to calculate Euclidean distance between two points
-double get_distance(double x1, double y1, double x2, double y2) {
-    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-}
 
 // Function to get Euclidean distance matrix bewteen any two vertexes
-void get_distance_matrix(double **coords, int num,double **distance_matrix){
+void get_distance_matrix_omp(double **coords, int num,double **distance_matrix){
   #pragma omp parallel for
   for(int i = 0; i < num; i++){
     for(int j = i; j < num; j++){
@@ -107,6 +36,8 @@ void get_distance_matrix(double **coords, int num,double **distance_matrix){
   }
 
 }
+
+
 
 // print 2D array
 void print2DArray(double **array, int rows, int cols) {
@@ -189,7 +120,7 @@ int main(int argc, char *argv[]) {
     distance_matrix [ i ] = ( double *) malloc ( numOfCoords * sizeof ( double ) ) ; 
   }
 
-  get_distance_matrix(coords, numOfCoords, distance_matrix);
+  get_distance_matrix_omp(coords, numOfCoords, distance_matrix);
 
   // print2DArray(distance_matrix, numOfCoords, numOfCoords);
 
@@ -214,13 +145,6 @@ int main(int argc, char *argv[]) {
           break;
       }
   }
-
-  // // print tour
-  // printf("%d\n",tourLength);
-  // for (int i = 0; i < tourLength; i++) {
-  //     printf("%d ", tour[i]);
-  // }
-  // printf("\n");
   
   // char *myfileName = "./mycout/cout_4096_my"; 
   writeTourToFile(tour, tourLength, out_put_file_path);
