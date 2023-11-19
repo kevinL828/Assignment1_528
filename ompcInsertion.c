@@ -142,13 +142,13 @@ int findCheapestInsertion(int *tour, int tourLength, double **distance_matrix, b
     int minPosition = -1;
     int minVertex = -1;
 
-    #pragma omp parallel for reduction(min:minIncrease)
+    // #pragma omp parallel for reduction(min:minIncrease)
     for (int i = 0; i < numOfCoords; i++) {
         if (!visited[i]) {
             for (int j = 0; j < tourLength-1; j++) {
                 double increase = distance_matrix[tour[j]][i] + distance_matrix[i][tour[j + 1]] - distance_matrix[tour[j]][tour[j + 1]];
                 if (increase < minIncrease) {
-                    #pragma omp critical
+                    // #pragma omp critical
                     minIncrease = increase;
                     minPosition = j;
                     minVertex = i;
