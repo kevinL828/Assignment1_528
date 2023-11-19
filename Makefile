@@ -28,6 +28,8 @@ echo "Scheduling priority          : $SLURM_PRIO_PROCESS"
 # parallel using OpenMP
 # SRC = $1 is name of the source code as an arguemnt
 SRC=$1
+DATA=$2
+DEST=$3
 
 #sets the exe name as the sourcecode, and %% removes the ".c"
 EXE=${SRC%%.c}.exe 
