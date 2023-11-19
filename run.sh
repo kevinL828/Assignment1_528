@@ -25,6 +25,9 @@ touch $DIR/$F16OUT
 touch $DIR/$F4096OUT
 
 
+# load modules intel compiler
+module load compilers/intel/2019u5 
+
 # run Makefile
 make Makefile
 
