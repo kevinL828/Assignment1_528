@@ -28,8 +28,8 @@ module load compilers/intel/2019u5
 make
 
 # run to get the output data, wirte output to a log file
-touch 
 # cInsertion in single
 echo "run: ./ci.exe 9_coords.coord -o $DIR/$C9OUT" >> $LOG
 ./ci.exe 9_coords.coord -o $DIR/$C9OUT >> $LOG
+echo "" >> $LOG
 
