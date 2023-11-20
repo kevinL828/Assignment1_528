@@ -30,9 +30,9 @@ make
 
 # run to get the output data, wirte output to a log file
 # cInsertion in single
-echo "run: ./ci.exe 9_coords.coord $DIR/$C9OUT"
+echo "[c_time] run: ./ci.exe 9_coords.coord $DIR/$C9OUT"
 echo ${c_time} >> $LOG
-echo "run: ./ci.exe 9_coords.coord $DIR/$C9OUT" >> $LOG
+echo "[c_time] run: ./ci.exe 9_coords.coord $DIR/$C9OUT" >> $LOG
 ./ci.exe 9_coords.coord $DIR/$C9OUT >> $LOG
 echo "" >> $LOG
 
@@ -43,9 +43,9 @@ echo "" >> $LOG
 echo "Finished!"
 
 # same for cout_16 and cout_4096 data
-echo "run: ./ci.exe 16_coords.coord $DIR/$C16OUT"
+echo "[c_time] run: ./ci.exe 16_coords.coord $DIR/$C16OUT"
 echo ${c_time} >> $LOG
-echo "run: ./ci.exe 16_coords.coord $DIR/$C16OUT" >> $LOG
+echo "[c_time] run: ./ci.exe 16_coords.coord $DIR/$C16OUT" >> $LOG
 ./ci.exe 16_coords.coord $DIR/$C16OUT >> $LOG
 echo "" >> $LOG
 echo "run compare.exe to compare with the standard answer:" >> $LOG
@@ -53,9 +53,9 @@ echo "run compare.exe to compare with the standard answer:" >> $LOG
 echo "" >> $LOG
 echo "Finished!"
 
-echo "run: ./ci.exe 4096_coords.coord $DIR/$C4096OUT"
+echo "[c_time] run: ./ci.exe 4096_coords.coord $DIR/$C4096OUT"
 echo ${c_time} >> $LOG
-echo "run: ./ci.exe 4096_coords.coord $DIR/$C4096OUT" >> $LOG
+echo "[c_time] run: ./ci.exe 4096_coords.coord $DIR/$C4096OUT" >> $LOG
 ./ci.exe 4096_coords.coord $DIR/$C4096OUT >> $LOG
 echo "" >> $LOG
 echo "run compare.exe to compare with the standard answer:" >> $LOG
@@ -66,32 +66,38 @@ echo "Finished!"
 
 # same operation for farthest insetion
 # fInsertion in single
-echo "run: ./fi.exe 9_coords.coord $DIR/$F9OUT"
+echo "[c_time] run: ./fi.exe 9_coords.coord $DIR/$F9OUT"
 echo ${c_time} >> $LOG
-echo "run: ./fi.exe 9_coords.coord $DIR/$F9OUT" >> $LOG
+echo "[c_time] run: ./fi.exe 9_coords.coord $DIR/$F9OUT" >> $LOG
 ./fi.exe 9_coords.coord $DIR/$F9OUT >> $LOG
 echo "" >> $LOG
 echo "run compare.exe to compare with the standard answer:" >> $LOG
-./compare.exe cout_9.dat $DIR/$F9OUT >> $LOG
+./compare.exe fout_9.dat $DIR/$F9OUT >> $LOG
+echo "" >> $LOG
+echo "" >> $LOG
 echo "" >> $LOG
 echo "Finished!"
 
-echo "run: ./fi.exe 16_coords.coord $DIR/$F16OUT"
+echo "[c_time] run: ./fi.exe 16_coords.coord $DIR/$F16OUT"
 echo ${c_time} >> $LOG
-echo "run: ./fi.exe 16_coords.coord $DIR/$F16OUT" >> $LOG
+echo "[c_time] run: ./fi.exe 16_coords.coord $DIR/$F16OUT" >> $LOG
 ./fi.exe 16_coords.coord $DIR/$F16OUT >> $LOG
 echo "" >> $LOG
 echo "run compare.exe to compare with the standard answer:" >> $LOG
-./compare.exe cout_16.dat $DIR/$F16OUT >> $LOG
+./compare.exe fout_16.dat $DIR/$F16OUT >> $LOG
+echo "" >> $LOG
+echo "" >> $LOG
 echo "" >> $LOG
 echo "Finished!"
 
-echo "run: ./fi.exe 4096_coords.coord $DIR/$F4096OUT"
+echo "[c_time] run: ./fi.exe 4096_coords.coord $DIR/$F4096OUT"
 echo ${c_time} >> $LOG
-echo "run: ./fi.exe 4096_coords.coord $DIR/$F4096OUT" >> $LOG
+echo "[c_time] run: ./fi.exe 4096_coords.coord $DIR/$F4096OUT" >> $LOG
 ./fi.exe 4096_coords.coord $DIR/$F4096OUT >> $LOG
 echo "" >> $LOG
 echo "run compare.exe to compare with the standard answer:" >> $LOG
-./compare.exe cout_4096.dat $DIR/$F4096OUT >> $LOG
+./compare.exe fout_4096.dat $DIR/$F4096OUT >> $LOG
+echo "" >> $LOG
+echo "" >> $LOG
 echo "" >> $LOG
 echo "Finished!"
