@@ -67,28 +67,43 @@ void free_2DArray(double **arr, int rows){
   free(arr);
 }
 
-// Function to find cheapest insertion
+// Function to find cheaptest insertion
 int findCheapestInsertion(int *tour, int tourLength, double **distance_matrix, bool *visited, int numOfCoords) {
     double minIncrease = INFINITY;
     int minPosition = -1;
     int minVertex = -1;
 
-    // #pragma omp parallel for reduction(min:minIncrease)
-    for (int i = 0; i < numOfCoords; i++) {
-        if (!visited[i]) {
-            for (int j = 0; j < tourLength-1; j++) {
-                double increase = distance_matrix[tour[j]][i] + distance_matrix[i][tour[j + 1]] - distance_matrix[tour[j]][tour[j + 1]];
-                if (increase < minIncrease) {
-                    // #pragma omp critical
-                    minIncrease = increase;
-                    minPosition = j;
-                    minVertex = i;
+    #pragma omp parallel
+    {
+        double localMinIncrease = INFINITY;
+        int localMinPosition = -1;
+        int localMinVertex = -1;
+
+        #pragma omp for nowait
+        for (int i = 0; i < numOfCoords; i++) {
+            if (!visited[i]) {
+                for (int j = 0; j < tourLength - 1; j++) {
+                    double increase = distance_matrix[tour[j]][i] + distance_matrix[i][tour[j + 1]] - distance_matrix[tour[j]][tour[j + 1]];
+                    if (increase < localMinIncrease) {
+                        localMinIncrease = increase;
+                        localMinPosition = j;
+                        localMinVertex = i;
+                    }
                 }
+            }
+        }
+
+        #pragma omp critical
+        {
+            if (localMinIncrease < minIncrease) {
+                minIncrease = localMinIncrease;
+                minPosition = localMinPosition;
+                minVertex = localMinVertex;
             }
         }
     }
 
-    // 插入顶点
+    // Insert vertex
     if (minPosition != -1) {
         for (int i = tourLength; i > minPosition + 1; i--) {
             tour[i] = tour[i - 1];
