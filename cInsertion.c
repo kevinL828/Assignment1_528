@@ -73,7 +73,6 @@ int main(int argc, char *argv[]) {
   int numOfCoords = readNumOfCoords(filename);
   double **coords = readCoords(filename, numOfCoords);
 
-  // print2DArray(coords, numOfCoords,2);
 
   // Initialize the distance matrix
   double **distance_matrix = (double **) malloc ( numOfCoords * sizeof ( double * ) ) ; 
@@ -82,8 +81,6 @@ int main(int argc, char *argv[]) {
   }
 
   get_distance_matrix(coords, numOfCoords, distance_matrix);
-
-  // print2DArray(distance_matrix, numOfCoords, numOfCoords);
 
   // initialize the visited array
   bool *visited = (bool *)calloc(numOfCoords, sizeof(bool));
@@ -106,13 +103,6 @@ int main(int argc, char *argv[]) {
           break;
       }
   }
-
-  // print tour
-  printf("%d\n",tourLength);
-  for (int i = 0; i < tourLength; i++) {
-      printf("%d ", tour[i]);
-  }
-  printf("\n");
 
   // char *myfileName = "./mycout/cout_4096_my"; 
   writeTourToFile(tour, tourLength, out_put_file_path);

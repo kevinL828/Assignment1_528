@@ -86,8 +86,6 @@ int main(int argc, char *argv[]) {
   int numOfCoords = readNumOfCoords(filename);
   double **coords = readCoords(filename, numOfCoords);
 
-  // print2DArray(coords, numOfCoords,2);
-
   // Initialize the distance matrix
   double **distance_matrix = (double **) malloc ( numOfCoords * sizeof ( double * ) ) ; 
   for ( int i = 0; i < numOfCoords ; i++) { 
@@ -95,8 +93,6 @@ int main(int argc, char *argv[]) {
   }
 
   get_distance_matrix(coords, numOfCoords, distance_matrix);
-
-  // print2DArray(distance_matrix, numOfCoords, numOfCoords);
 
   // initialize the visited array
   bool *visited = (bool *)calloc(numOfCoords, sizeof(bool));
@@ -110,22 +106,22 @@ int main(int argc, char *argv[]) {
   tourLength = 2;
 
   // Find the farthest vertex from the initial vertex
-    int farthest = findFarthestVertex(distance_matrix, visited, numOfCoords, tour, tourLength);
-    tour[1] = farthest;
-    visited[farthest] = true;
-    tourLength = 3;
+  int farthest = findFarthestVertex(distance_matrix, visited, numOfCoords, tour, tourLength);
+  tour[1] = farthest;
+  visited[farthest] = true;
+  tourLength = 3;
 
-    // Main loop of the Farthest Insertion algorithm
-    while (tourLength < numOfCoords+1) {
-        farthest = findFarthestVertex(distance_matrix, visited, numOfCoords, tour, tourLength);
-        if (farthest != -1) {
-            insertAtBestPosition(tour, tourLength, farthest, distance_matrix);
-            visited[farthest] = true;
-            tourLength++;
-        } else {
-            break;
-        }
+  // Main loop of the Farthest Insertion algorithm
+  while (tourLength < numOfCoords+1) {
+    farthest = findFarthestVertex(distance_matrix, visited, numOfCoords, tour, tourLength);
+    if (farthest != -1) {
+      insertAtBestPosition(tour, tourLength, farthest, distance_matrix);
+      visited[farthest] = true;
+      tourLength++;
+    } else {
+      break;
     }
+  }
 
 
   // char *myfileName = "./mycout/cout_4096_my"; 

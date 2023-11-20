@@ -127,8 +127,6 @@ int main(int argc, char *argv[]) {
   int numOfCoords = readNumOfCoords(filename);
   double **coords = readCoords(filename, numOfCoords);
 
-  // print2DArray(coords, numOfCoords,2);
-
   // Initialize the distance matrix
   double **distance_matrix = (double **) malloc ( numOfCoords * sizeof ( double * ) ) ; 
   for ( int i = 0; i < numOfCoords ; i++) { 
@@ -136,8 +134,6 @@ int main(int argc, char *argv[]) {
   }
 
   get_distance_matrix_omp(coords, numOfCoords, distance_matrix);
-
-  // print2DArray(distance_matrix, numOfCoords, numOfCoords);
 
   // initialize the visited array
   bool *visited = (bool *)calloc(numOfCoords, sizeof(bool));
