@@ -31,6 +31,10 @@ EXE=$1
 DAT=$2
 OUT=$3
 
+echo $EXE
+echo $DAT
+echo $OUT
 #compilation using intel compiler of sourcecode to exectuable.
 echo ./$EXE $DAT $OUT
+./$EXE $DAT $OUT
 echo ------------------------------------
