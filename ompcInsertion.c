@@ -172,6 +172,6 @@ int main(int argc, char *argv[]) {
 
   end = clock();
   times = (double)(end-start)/CLOCKS_PER_SEC;
-  printf("The total cost of this code is: %f s",times);
+  printf("The total cost of this code is: %f s\n",times);
   return 0;
 }
