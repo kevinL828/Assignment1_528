@@ -14,51 +14,35 @@ double get_distance(double x1, double y1, double x2, double y2);
 void get_distance_matrix(double **coords, int num,double **distance_matrix);
 
 
-void malloc_2DArray(double **array,int numOfElements){
-
-  array = (double **) malloc ( numOfElements * sizeof ( double * ) ) ; 
-  for ( int i = 0; i < numOfElements ; i++) { 
-    array [ i ] = ( double *) malloc ( numOfElements * sizeof ( double ) ) ; 
-  }
-}
-
-
-void free_2DArray(double **arr, int rows){
-  // free memory
-  for (int i = 0; i < rows; i++) {
-      free(arr[i]);
-  }
-  free(arr);
-}
-
 // Function to find cheapest insertion
 int findCheapestInsertion(int *tour, int tourLength, double **distance_matrix, bool *visited, int numOfCoords) {
-    double minIncrease = INFINITY;
-    int minPosition = -1;
-    int minVertex = -1;
+  double minIncrease = INFINITY;
+  int minPosition = -1;
+  int minVertex = -1;
 
-    for (int i = 0; i < numOfCoords; i++) {
-        if (!visited[i]) {
-            for (int j = 0; j < tourLength-1; j++) {
-                double increase = distance_matrix[tour[j]][i] + distance_matrix[i][tour[j + 1]] - distance_matrix[tour[j]][tour[j + 1]];
-                if (increase < minIncrease) {
-                    minIncrease = increase;
-                    minPosition = j;
-                    minVertex = i;
-                }
-            }
+  for (int i = 0; i < numOfCoords; i++) {
+    // if the vertex not in the tour, calculate the distance among the tour vertex
+    if (!visited[i]) {
+      for (int j = 0; j < tourLength-1; j++) {
+        double increase = distance_matrix[tour[j]][i] + distance_matrix[i][tour[j + 1]] - distance_matrix[tour[j]][tour[j + 1]];
+        if (increase < minIncrease) {
+            minIncrease = increase;
+            minPosition = j;
+            minVertex = i;
         }
+      }
     }
+  }
 
-    // insert vertex
-    if (minPosition != -1) {
-        for (int i = tourLength; i > minPosition + 1; i--) {
-            tour[i] = tour[i - 1];
-        }
-        tour[minPosition + 1] = minVertex;
+  // insert vertex
+  if (minPosition != -1) {
+    for (int i = tourLength; i > minPosition + 1; i--) {
+        tour[i] = tour[i - 1];
     }
+    tour[minPosition + 1] = minVertex;
+  }
 
-    return minVertex;
+  return minVertex;
 }
 
 
@@ -77,7 +61,7 @@ int main(int argc, char *argv[]) {
   // Initialize the distance matrix
   double **distance_matrix = (double **) malloc ( numOfCoords * sizeof ( double * ) ) ; 
   for ( int i = 0; i < numOfCoords ; i++) { 
-    distance_matrix [ i ] = ( double *) malloc ( numOfCoords * sizeof ( double ) ) ; 
+    distance_matrix [ i ] = ( double *) malloc ( numOfCoords * sizeof ( int ) ) ; 
   }
 
   get_distance_matrix(coords, numOfCoords, distance_matrix);
@@ -94,6 +78,7 @@ int main(int argc, char *argv[]) {
   tourLength = 2;
 
   // Excute Cheapest Insertion
+  // change the new insert vertex's visited flag to true
   while (tourLength < numOfCoords+1) {
       int nextVertex = findCheapestInsertion(tour, tourLength, distance_matrix, visited, numOfCoords);
       if (nextVertex != -1) {
@@ -104,17 +89,21 @@ int main(int argc, char *argv[]) {
       }
   }
 
-  // char *myfileName = "./mycout/cout_4096_my"; 
+  // write tour result to file
   writeTourToFile(tour, tourLength, out_put_file_path);
 
   // free memory
   free(tour);
   free(visited);
   //free memory
-  free_2DArray(distance_matrix, numOfCoords);
+  for (int i = 0; i < numOfCoords; i++) {
+      free(distance_matrix[i]);
+  }
+  free(distance_matrix);
   end = clock();
   times = (double)(end-start)/CLOCKS_PER_SEC;
   printf("The total cost of this code is: %f s\n",times);
+
 
   return 0;
 }

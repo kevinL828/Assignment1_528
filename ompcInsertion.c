@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
   // initialize the visited array
   bool *visited = (bool *)calloc(numOfCoords, sizeof(bool));
   int *tour = (int *)malloc((numOfCoords+1) * sizeof(int));
-  int tourLength = numOfCoords;
+  int tourLength;
 
   // initialize original vertex
   tour[0] = 0;
