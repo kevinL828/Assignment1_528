@@ -14,6 +14,15 @@ double get_distance(double x1, double y1, double x2, double y2);
 void get_distance_matrix(double **coords, int num,double **distance_matrix);
 
 
+// free memory
+void free_2DArray(double **arr, int rows){
+  // free memory
+  for (int i = 0; i < rows; i++) {
+      free(arr[i]);
+  }
+  free(arr);
+}
+
 // Function to find cheapest insertion
 int findCheapestInsertion(int *tour, int tourLength, double **distance_matrix, bool *visited, int numOfCoords) {
   double minIncrease = INFINITY;
@@ -96,10 +105,8 @@ int main(int argc, char *argv[]) {
   free(tour);
   free(visited);
   //free memory
-  for (int i = 0; i < numOfCoords; i++) {
-      free(distance_matrix[i]);
-  }
-  free(distance_matrix);
+   //free memory
+  free_2DArray(distance_matrix, numOfCoords);
   end = clock();
   times = (double)(end-start)/CLOCKS_PER_SEC;
   printf("The total cost of this code is: %f s\n",times);
