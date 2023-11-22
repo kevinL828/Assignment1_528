@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
   free_2DArray(distance_matrix, numOfCoords);
 
   end = omp_get_wtime();
-  times = (double)(end-start)/CLOCKS_PER_SEC;
+  times = (double)(end-start);
   printf("The total cost of this code is: %f s\n",times);
   return 0;
 }
