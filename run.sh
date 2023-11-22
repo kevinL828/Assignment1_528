@@ -108,7 +108,7 @@ echo "Finished!"
 echo "" >> $LOG
 echo "" >> $LOG
 
-
+# cheapest
 # run with omp parallel method by GCC
 for x in 1 2 4 8 16 32
 do
@@ -122,6 +122,47 @@ do
   echo "" >> $LOG
   
 done
-#
-# get_c_time
-# sbatch -c 4 comp.exe 4096_coords.coord ./myOutPut/cout_4096_omp.dat
+
+# run with omp parallel method by ICC
+for x in 1 2 4 8 16 32
+do
+  get_c_time
+  echo "[${c_time}] run: sbatch -c $x openmp.sh icomp.exe 4096_coords.coord ${C4096OUT_OMP}_${x}"
+  echo "[${c_time}] run: sbatch -c $x openmp.sh icomp.exe 4096_coords.coord ${C4096OUT_OMP}_${x}" >> $LOG
+  sbatch -c $x openmp.sh icomp.exe 4096_coords.coord ${C4096OUT_OMP}_${x} >> $LOG
+  echo "" >> $LOG
+  echo "Finished!"
+  echo "" >> $LOG
+  echo "" >> $LOG
+  
+done
+
+
+# farthest
+# run with omp parallel method by GCC
+for x in 1 2 4 8 16 32
+do
+  get_c_time
+  echo "[${c_time}] run: sbatch -c $x openmp.sh fomp.exe 4096_coords.coord ${C4096OUT_OMP}_${x}"
+  echo "[${c_time}] run: sbatch -c $x openmp.sh fomp.exe 4096_coords.coord ${C4096OUT_OMP}_${x}" >> $LOG
+  sbatch -c $x openmp.sh fomp.exe 4096_coords.coord ${C4096OUT_OMP}_${x} >> $LOG
+  echo "" >> $LOG
+  echo "Finished!"
+  echo "" >> $LOG
+  echo "" >> $LOG
+  
+done
+
+# run with omp parallel method by ICC
+for x in 1 2 4 8 16 32
+do
+  get_c_time
+  echo "[${c_time}] run: sbatch -c $x openmp.sh ifomp.exe 4096_coords.coord ${C4096OUT_OMP}_${x}"
+  echo "[${c_time}] run: sbatch -c $x openmp.sh ifomp.exe 4096_coords.coord ${C4096OUT_OMP}_${x}" >> $LOG
+  sbatch -c $x openmp.sh ifomp.exe 4096_coords.coord ${C4096OUT_OMP}_${x} >> $LOG
+  echo "" >> $LOG
+  echo "Finished!"
+  echo "" >> $LOG
+  echo "" >> $LOG
+  
+done

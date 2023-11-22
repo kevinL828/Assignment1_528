@@ -66,22 +66,27 @@ void free_2DArray(double **arr, int rows){
 
 // Function to find the farthest unvisited vertex
 int findFarthestVertex(double **distance_matrix, bool *visited, int numOfCoords, int *tour, int tourLength) {
-  double maxDistance = -1.0;
-  int farthestVertex = -1;
-  double distance_sum;
+    double maxDistance = -1.0;
+    int farthestVertex = -1;
 
-  for (int i = 0; i < numOfCoords; i++) {
-    if (!visited[i]) {
-      for (int j = 0; j < tourLength; j++) {
-        if (distance_matrix[tour[j]][i] > maxDistance) {
-            maxDistance = distance_matrix[tour[j]][i];
-            farthestVertex = i;
+    #pragma omp parallel for reduction(max:maxDistance)
+    for (int i = 0; i < numOfCoords; i++) {
+        if (!visited[i]) {
+            for (int j = 0; j < tourLength; j++) {
+                if (distance_matrix[tour[j]][i] > maxDistance) {
+                    #pragma omp critical
+                    {
+                        if (distance_matrix[tour[j]][i] > maxDistance) {
+                            maxDistance = distance_matrix[tour[j]][i];
+                            farthestVertex = i;
+                        }
+                    }
+                }
+            }
         }
-      }
     }
-  }
 
-  return farthestVertex;
+    return farthestVertex;
 }
 
 // Function to insert a vertex in the tour at the best position
@@ -89,11 +94,17 @@ void insertAtBestPosition(int *tour, int tourLength, int vertex, double **distan
     double minIncrease = INFINITY;
     int bestPosition = -1;
 
+    #pragma omp parallel for reduction(min:minIncrease)
     for (int i = 0; i < tourLength - 1; i++) {
         double increase = distance_matrix[tour[i]][vertex] + distance_matrix[vertex][tour[i + 1]] - distance_matrix[tour[i]][tour[i + 1]];
         if (increase < minIncrease) {
-            minIncrease = increase;
-            bestPosition = i;
+            #pragma omp critical
+            {
+                if (increase < minIncrease) {
+                    minIncrease = increase;
+                    bestPosition = i;
+                }
+            }
         }
     }
 
@@ -103,6 +114,7 @@ void insertAtBestPosition(int *tour, int tourLength, int vertex, double **distan
     }
     tour[bestPosition + 1] = vertex;
 }
+
 
 
 //-----------------------------------------------------------------
