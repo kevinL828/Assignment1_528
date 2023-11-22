@@ -3,7 +3,6 @@
 #include<math.h>
 #include<string.h>
 #include<stdbool.h>
-#include<time.h>
 #include<omp.h>
 
 
@@ -23,10 +22,10 @@ void get_distance_matrix_omp(double **coords, int num,double **distance_matrix){
       if (i == j){
         distance_matrix[i][j] = 0;
       }else{
-        int x1 = **(coords+i);
-        int y1 = *(*(coords+i)+1);
-        int x2 = **(coords+j);
-        int y2 = *(*(coords+j)+1);
+        double x1 = **(coords+i);
+        double y1 = *(*(coords+i)+1);
+        double x2 = **(coords+j);
+        double y2 = *(*(coords+j)+1);
         double distance = get_distance(x1,y1,x2,y2);
         distance_matrix[i][j] = distance;
         distance_matrix[j][i] = distance;
@@ -114,14 +113,13 @@ int findCheapestInsertion(int *tour, int tourLength, double **distance_matrix, b
     return minVertex;
 }
 
-
 //-----------------------------------------------------------------
 
 
 int main(int argc, char *argv[]) {
   clock_t start, end;
   double times;
-  start = clock();
+  start = omp_get_wtime();
   char *filename = argv[1];
   char *out_put_file_path = argv[2];
   int numOfCoords = readNumOfCoords(filename);
@@ -166,7 +164,7 @@ int main(int argc, char *argv[]) {
   //free memory
   free_2DArray(distance_matrix, numOfCoords);
 
-  end = clock();
+  end = omp_get_wtime();
   times = (double)(end-start)/CLOCKS_PER_SEC;
   printf("The total cost of this code is: %f s\n",times);
   return 0;

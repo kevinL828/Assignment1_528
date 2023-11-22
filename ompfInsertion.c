@@ -111,7 +111,7 @@ void insertAtBestPosition(int *tour, int tourLength, int vertex, double **distan
 int main(int argc, char *argv[]) {
   clock_t start, end;
   double times;
-  start = clock();
+  start = omp_get_wtime();
   char *filename = argv[1];
   char *out_put_file_path = argv[2];
   int numOfCoords = readNumOfCoords(filename);
@@ -169,7 +169,7 @@ int main(int argc, char *argv[]) {
   //free memory
   free_2DArray(distance_matrix, numOfCoords);
   
-  end = clock();
+  end = omp_get_wtime();
   times = (double)(end-start)/CLOCKS_PER_SEC;
   printf("The total cost of this code is: %f s\n",times);
   

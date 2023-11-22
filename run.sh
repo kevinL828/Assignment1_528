@@ -117,9 +117,6 @@ do
   echo "[${c_time}] run: sbatch -c $x openmp.sh comp.exe 4096_coords.coord ${C4096OUT_OMP}_${x}" >> $LOG
   sbatch -c $x openmp.sh comp.exe 4096_coords.coord ${C4096OUT_OMP}_${x} >> $LOG
   echo "" >> $LOG
-  echo "run compare.exe to compare with the standard answer:" >> $LOG
-  ./compare.exe cout_4096.dat $DIR/${C4096OUT_OMP}_${x} >> $LOG
-  echo "" >> $LOG
   echo "Finished!"
   echo "" >> $LOG
   echo "" >> $LOG

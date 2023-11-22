@@ -125,10 +125,10 @@ void get_distance_matrix(double **coords, int num,double **distance_matrix){
       if (i == j){
         distance_matrix[i][j] = 0;
       }else{
-        int x1 = coords[i][0];
-        int y1 = coords[i][1];
-        int x2 = coords[j][1];
-        int y2 = coords[j][1];
+        double x1 = coords[i][0];
+        double y1 = coords[i][1];
+        double x2 = coords[j][0];
+        double y2 = coords[j][1];
         double distance = get_distance(x1,y1,x2,y2);
         distance_matrix[i][j] = distance;
         distance_matrix[j][i] = distance;
