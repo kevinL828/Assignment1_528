@@ -8,6 +8,7 @@
 #SBATCH -D ./
 ## Export the current environment to the compute node
 #SBATCH --export=ALL
+#SBATCH --time=1:00:00
 
 # load modules intel compiler
 module load compilers/intel/2019u5 

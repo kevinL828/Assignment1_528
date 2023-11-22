@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
   // Initialize the distance matrix
   double **distance_matrix = (double **) malloc ( numOfCoords * sizeof ( double * ) ) ; 
   for ( int i = 0; i < numOfCoords ; i++) { 
-    distance_matrix [ i ] = ( double *) malloc ( numOfCoords * sizeof ( int ) ) ; 
+    distance_matrix [ i ] = ( double *) malloc ( numOfCoords * sizeof ( double ) ) ; 
   }
 
   get_distance_matrix(coords, numOfCoords, distance_matrix);
@@ -104,9 +104,8 @@ int main(int argc, char *argv[]) {
   // free memory
   free(tour);
   free(visited);
-  //free memory
-   //free memory
   free_2DArray(distance_matrix, numOfCoords);
+
   end = clock();
   times = (double)(end-start)/CLOCKS_PER_SEC;
   printf("The total cost of this code is: %f s\n",times);
