@@ -10,8 +10,33 @@ int readNumOfCoords(char *fileName);
 double **readCoords(char *filename, int numOfCoords);
 void *writeTourToFile(int *tour, int tourLength, char *filename);
 void print_coordinates(double **coords,int num);
-double get_distance(double x1, double y1, double x2, double y2);
-void get_distance_matrix(double **coords, int num,double **distance_matrix);
+
+
+// Function to calculate Euclidean distance between two points
+double get_distance(double x1, double y1, double x2, double y2) {
+    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
+
+// Function to get Euclidean distance matrix bewteen any two vertexes
+void get_distance_matrix(double **coords, int num,double **distance_matrix){
+  for(int i = 0; i < num; i++){
+    for(int j = i; j < num; j++){
+      if (i == j){
+        distance_matrix[i][j] = 0;
+      }else{
+        double x1 = coords[i][0];
+        double y1 = coords[i][1];
+        double x2 = coords[j][0];
+        double y2 = coords[j][1];
+        double distance = get_distance(x1,y1,x2,y2);
+        distance_matrix[i][j] = distance;
+        distance_matrix[j][i] = distance;
+      }
+        
+    }
+  }
+
+}
 
 
 // free memory

@@ -11,7 +11,12 @@ int readNumOfCoords(char *fileName);
 double **readCoords(char *filename, int numOfCoords);
 void *writeTourToFile(int *tour, int tourLength, char *filename);
 void print_coordinates(double **coords,int num);
-double get_distance(double x1, double y1, double x2, double y2);
+
+
+// Function to calculate Euclidean distance between two points
+double get_distance(double x1, double y1, double x2, double y2) {
+    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
 
 
 // Function to get Euclidean distance matrix bewteen any two vertexes
@@ -22,10 +27,10 @@ void get_distance_matrix_omp(double **coords, int num,double **distance_matrix){
       if (i == j){
         distance_matrix[i][j] = 0;
       }else{
-        int x1 = **(coords+i);
-        int y1 = *(*(coords+i)+1);
-        int x2 = **(coords+j);
-        int y2 = *(*(coords+j)+1);
+        double x1 = **(coords+i);
+        double y1 = *(*(coords+i)+1);
+        double x2 = **(coords+j);
+        double y2 = *(*(coords+j)+1);
         double distance = get_distance(x1,y1,x2,y2);
         distance_matrix[i][j] = distance;
         distance_matrix[j][i] = distance;
@@ -34,25 +39,6 @@ void get_distance_matrix_omp(double **coords, int num,double **distance_matrix){
     }
   }
 
-}
-
-// print 2D array
-void print2DArray(double **array, int rows, int cols) {
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            printf("%f ", array[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-
-void malloc_2DArray(double **array,int numOfElements){
-
-  array = (double **) malloc ( numOfElements * sizeof ( double * ) ) ; 
-  for ( int i = 0; i < numOfElements ; i++) { 
-    array [ i ] = ( double *) malloc ( numOfElements * sizeof ( double ) ) ; 
-  }
 }
 
 
@@ -66,53 +52,71 @@ void free_2DArray(double **arr, int rows){
 
 // Function to find the farthest unvisited vertex
 int findFarthestVertex(double **distance_matrix, bool *visited, int numOfCoords, int *tour, int tourLength) {
-    double maxDistance = -1.0;
-    int farthestVertex = -1;
+  double maxDistance = -1.0;
+  int farthestVertex = -1;
 
-    #pragma omp parallel for reduction(max:maxDistance)
+  #pragma omp parallel
+  {
+    double localMaxDistance = -1.0;
+    int localFarthestVertex = -1;
+
+    #pragma omp for nowait
     for (int i = 0; i < numOfCoords; i++) {
-        if (!visited[i]) {
-            for (int j = 0; j < tourLength; j++) {
-                if (distance_matrix[tour[j]][i] > maxDistance) {
-                    #pragma omp critical
-                    {
-                        if (distance_matrix[tour[j]][i] > maxDistance) {
-                            maxDistance = distance_matrix[tour[j]][i];
-                            farthestVertex = i;
-                        }
-                    }
-                }
-            }
+      if (!visited[i]) {
+        for (int j = 0; j < tourLength; j++) {
+          if (distance_matrix[tour[j]][i] > localMaxDistance) {
+            localMaxDistance = distance_matrix[tour[j]][i];
+            localFarthestVertex = i;
+          }
         }
+      }
     }
 
-    return farthestVertex;
+    #pragma omp critical
+    {
+      if (localMaxDistance > maxDistance) {
+        maxDistance = localMaxDistance;
+        farthestVertex = localFarthestVertex;
+      }
+    }
+  }
+  return farthestVertex;
 }
 
 // Function to insert a vertex in the tour at the best position
 void insertAtBestPosition(int *tour, int tourLength, int vertex, double **distance_matrix) {
-    double minIncrease = INFINITY;
-    int bestPosition = -1;
+  double minIncrease = INFINITY;
+  int bestPosition = -1;
 
-    #pragma omp parallel for reduction(min:minIncrease)
+  #pragma omp parallel
+  {
+    double localMinIncrease = INFINITY;
+    int localBestPosition = -1;
+    #pragma omp for nowait
     for (int i = 0; i < tourLength - 1; i++) {
-        double increase = distance_matrix[tour[i]][vertex] + distance_matrix[vertex][tour[i + 1]] - distance_matrix[tour[i]][tour[i + 1]];
-        if (increase < minIncrease) {
-            #pragma omp critical
-            {
-                if (increase < minIncrease) {
-                    minIncrease = increase;
-                    bestPosition = i;
-                }
-            }
-        }
+      double increase = distance_matrix[tour[i]][vertex] + distance_matrix[vertex][tour[i + 1]] - distance_matrix[tour[i]][tour[i + 1]];
+      if (increase < localMinIncrease) {
+        localMinIncrease = increase;
+        localBestPosition = i;
+      }
     }
 
-    // Shift elements to make space for the new vertex
-    for (int i = tourLength; i > bestPosition + 1; i--) {
-        tour[i] = tour[i - 1];
+    #pragma omp critical
+    {
+      if (localMinIncrease < minIncrease) {
+        minIncrease = localMinIncrease;
+        bestPosition = localBestPosition;
+      }
     }
-    tour[bestPosition + 1] = vertex;
+
+  }
+
+  // Shift elements to make space for the new vertex
+  for (int i = tourLength; i > bestPosition + 1; i--) {
+    tour[i] = tour[i - 1];
+  }
+  tour[bestPosition + 1] = vertex;
+ 
 }
 
 

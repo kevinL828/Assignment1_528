@@ -11,7 +11,11 @@ int readNumOfCoords(char *fileName);
 double **readCoords(char *filename, int numOfCoords);
 void *writeTourToFile(int *tour, int tourLength, char *filename);
 void print_coordinates(double **coords,int num);
-double get_distance(double x1, double y1, double x2, double y2);
+
+// Function to calculate Euclidean distance between two points
+double get_distance(double x1, double y1, double x2, double y2) {
+    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
 
 
 // Function to get Euclidean distance matrix bewteen any two vertexes
